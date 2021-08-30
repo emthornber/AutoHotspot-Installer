@@ -9,6 +9,9 @@
 #Other setup required find out more at
 #http://www.raspberryconnect.com
 
+#   28 August, 2021 - E M Thornber
+#   Parameterise the AP IP address
+
 wifidev="wlan0" #device name to use. Default is wlan0.
 #use the command: iw dev ,to see wifi interface name 
 
@@ -32,11 +35,17 @@ mac=()
 
 ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
+findAPaddress()
+{
+apipaddr=('10.0.0.5/24')
+apipaddr=$(awk -F'=' '/apaddr=/{ print $0 }' /etc/canpi.cfg)
+}
+
 createAdHocNetwork()
 {
     echo "Creating Hotspot"
     ip link set dev "$wifidev" down
-    ip a add 10.0.0.5/24 brd + dev "$wifidev"
+    ip a add |APADDRESS| brd + dev "$wifidev"
     ip link set dev "$wifidev" up
     dhcpcd -k "$wifidev" >/dev/null 2>&1
     systemctl start dnsmasq
