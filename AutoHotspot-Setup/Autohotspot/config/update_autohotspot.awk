@@ -5,7 +5,7 @@
 #   Created
 #
 # ip parameter	buildroot env
-#   fred	BR2_PACKAGE_AUTOAP_APNETWORK
+#   APNETWORK	BR2_PACKAGE_AUTOAP_APNETWORK
 #
 BEGIN {
     sub(/[^.]+$/, "254", APNETWORK)
