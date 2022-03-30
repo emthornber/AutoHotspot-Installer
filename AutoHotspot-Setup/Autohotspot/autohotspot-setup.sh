@@ -6,7 +6,7 @@
 #Installer version 0.74-1 (9 Feb 2022)
 #Installer for AutoHotspot, AutohotspotN scripts and Static Access Point setup.
 #Autohotspot: a script that allows the Raspberry Pi to switch between Network Wifi and
-#an access point either at bootup or with seperate timer without a reboot.
+#an access point either at bootup or with separate timer without a reboot.
 
 #This installer script will alter network settings and may overwrite existing settings if allowed.
 #/etc/hostapd/hostapd.conf (backup old), /etc/dnsmasq.conf (backup old), modifies /etc/dhcpcd.conf (modifies)
