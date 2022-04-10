@@ -37,7 +37,7 @@ ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
 findAPaddress()
 {
-apipaddr=('10.0.0.5/24')
+apipaddr=('|APADDRESS|/24')
 apipaddr=$(awk -F'=' '/apaddr=/{ print $0 }' /etc/canpi.cfg)
 }
 
