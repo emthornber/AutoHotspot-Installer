@@ -8,6 +8,22 @@
 #Works at startup or with a seperate timer or manually without a reboot
 #Other setup required find out more at
 #http://www.raspberryconnect.com
+#
+#   28 August, 2021 - E M Thornber
+#   Parameterise the AP configuration
+#
+#-------------------------------------------------------------------------------
+# Load Access Point configuration
+source /etc/autohs/autohotspot.conf
+#
+# variables defined
+# ap_ssid
+# ap_password
+# ap_channel
+# ap_network
+#
+ap_address=$(echo ${ap_network} | awk 'BEGIN { FS = "."; OFS = "." } ; { $4 = 254 ; print $0 }')
+#-------------------------------------------------------------------------------
 
 wifidev="wlan0" #device name to use. Default is wlan0.
 #use the command: iw dev ,to see wifi interface name 
@@ -32,12 +48,18 @@ mac=()
 
 ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
+updateDNSmasq() {
+    awk -v APNETWORK=${ap_network} \
+	-f /etc/autoap/update_dnsmasq.awk \
+	/etc/dnsmasq.conf.in > /etc/dnsmasq.conf
+}
+
 createAdHocNetwork()
 {
     echo "Autohotspot by RaspberryConnect.com"
     echo "Creating Hotspot"
     ip link set dev "$wifidev" down
-    ip a add 10.0.0.5/24 brd + dev "$wifidev"
+    ip a add ${ap_address}/24 brd + dev "$wifidev"
     ip link set dev "$wifidev" up
     dhcpcd -k "$wifidev" >/dev/null 2>&1
     systemctl start dnsmasq
@@ -159,6 +181,7 @@ NoDevice()
 
 chksys
 FindSSID
+updateDNSmasq
 
 #Create Hotspot or connect to valid wifi networks
 if [ "$ssidChk" != "NoSSid" ] 
