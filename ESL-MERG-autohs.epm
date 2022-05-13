@@ -1,0 +1,114 @@
+################################################################################
+#   EPM configuration file to create the autohs package
+#
+#   Note: Expects ${srcdir} to be defined externally
+#
+#   11 May, 2022 - E M Thornber
+#   Created
+#
+################################################################################
+#
+# Utilities
+$AWK=/usr/bin/awk
+$SCTL=/usr/bin/systemctl
+# Directories
+$autohs=/usr/local/etc/autohs
+$bindir=/usr/local/bin
+$config=AutoHotspot-Setup/Autohotspot/config
+$service=/usr/lib/systemd/system
+
+%product Create a WAP on a RPi if no WiFi available
+%copyright 2022 RaspberryConnect.com
+%vendor Enchanted Systems Limited
+%license LICENSE
+%readme README
+%description A service to set up a WAP if no configured WiFi routers can be found
+%version 0.74.1
+
+%requires dhcpcd5
+%requires dnsmasq
+%requires hostapd
+%requires wpasupplicant
+
+d 755 root root /etc -
+d 755 root root /etc/default -
+d 755 root root /etc/hostapd -
+d 755 root root /usr -
+d 755 root root /usr/lib -
+d 755 root root /usr/lib/systemd -
+d 755 root root ${service} -
+d 755 root root /usr/local -
+d 755 root root ${bindir} -
+d 755 root root /usr/local/etc -
+d 755 root root $autohs -
+
+# AutoHotspot script, and service
+f 755 root root ${bindir}/autohotspot ${srcdir}/${config}/autohotspot-direct
+f 644 root root ${service}/autohotspot.service ${srcdir}/${config}/autohotspot-direct.service
+
+# AutoHotspot configuration files
+f 644 root root ${autohs}/autohotspot.conf ${srcdir}/${config}/autohotspot-direct.conf
+f 644 root root ${autohs}/dhcpcd_autohs.conf ${srcdir}/${config}/dhcpcd_autohs.conf
+f 644 root root ${autohs}/dhcpcd_remove.conf ${srcdir}/${config}/dhcpcd_remove.conf
+f 644 root root ${autohs}/dnsmasq.conf.in ${srcdir}/${config}/dnsmasqAHS.conf.in
+f 644 root root ${autohs}/hostapd.conf.in ${srcdir}/${config}/hostapd.conf.in
+f 644 root root /etc/default/hostapd ${srcdir}/${config}/hostapd
+
+# AutoHotspot AWK scripts
+f 644 root root ${autohs}/update_dnsmasq.awk ${srcdir}/${config}/update_dnsmasq.awk
+f 644 root root ${autohs}/update_hostapd.awk ${srcdir}/${config}/update_hostapd.awk
+f 755 root root ${autohs}/update_hostapd.sh  ${srcdir}/${config}/update_hostapd.sh
+
+%preinstall <<EOF
+
+cd /etc
+for f in dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf default/hostapd
+do
+    if [ -f $$f ] ; then
+	mv $$f $$f.preautohs
+done
+
+EOF
+
+%postinstall <<EOF
+
+# Configure hostapd
+${autohs}/update_hostapd.sh > /etc/hostapd/hostapd.conf
+${SCTL} show --property=LoadState hostapd.service | grep masked && ${SCTL} unmask hostapd.service
+${SCTL} show --property=UnitFileState hostapd.service | grep disabled && ${SCTL} enable hostapd.service
+# Configure dnsmasq
+network=`${AWK} -F'=' '/ap_network/{ print $2 }' ${autohs}/autohotspot.conf
+if [ -z $$network ] ; then network="192.168.45.1" ; fi
+${AWK} -v APNETWORK=$$network -f ${autohs}update_dnsmasq.awk ${autohs}/dnsmasq.conf.in > /etc/dnsmasq.conf
+${SCTL} show --property=LoadState dnsmasq.service | grep masked && ${SCTL} unmask dnsmasq.service
+${SCTL} show --property=UnitFileState dnsmasq.service | grep enabled && ${SCTL} disable dnsmasq.service
+# Configure dhcpcd
+if [ -f /etc/dhcpcd.conf.preautohs ]
+then
+    grep -vxf ${autohs}/dhcpcd-remove.conf /etc/dhcpcd.conf.preautohs > /etc/dhcpcd.conf
+fi
+cat ${autohs}/dhcpcd-autohs.conf >> /etc/dhcpcd.conf
+
+/bin/systemctl daemon-reload
+/bin/systemctl enable autohotspot
+
+EOF
+
+%preremove <<EOF
+
+/bin/systemctl stop autohotspot
+/bin/systemctl disable autohotspot
+
+EOF
+
+%postremove <<EOF
+
+cd /etc
+for f in dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf default/hostapd
+do
+    if [ -f $$f ] ; then
+	mv $$f.preautohs $$f
+done
+
+EOF
+

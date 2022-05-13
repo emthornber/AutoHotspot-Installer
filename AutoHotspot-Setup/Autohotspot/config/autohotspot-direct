@@ -22,6 +22,7 @@ source /etc/autohs/autohotspot.conf
 # ap_channel
 # ap_network
 #
+# shellcheck disable=SC2154
 ap_address=$(echo ${ap_network} | awk 'BEGIN { FS = "."; OFS = "." } ; { $4 = 254 ; print $0 }')
 #-------------------------------------------------------------------------------
 
@@ -121,7 +122,7 @@ ssidChk=('NoSSid')
 i=0; j=0
 until [ $i -eq 1 ] #wait for wifi if busy, usb wifi is slower.
 do
-        ssidreply=$((iw dev "$wifidev" scan ap-force | egrep "^BSS|SSID:") 2>&1) >/dev/null 2>&1 
+        ssidreply=$( (iw dev "$wifidev" scan ap-force | egrep "^BSS|SSID:") 2>&1) >/dev/null 2>&1
         #echo "SSid's in range: " $ssidreply
 	printf '%s\n' "${ssidreply[@]}"
         echo "Device Available Check try " $j
