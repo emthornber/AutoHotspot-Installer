@@ -1,0 +1,11 @@
+#RaspberryConnect.com
+#AutoHotspot Config
+#
+#   30 August, 2021 - E M Thornber
+#   Parameterise DHCP range
+#
+interface=wlan0
+no-resolv
+bind-interfaces
+dhcp-range=|DHCPFROM|,|DHCPTO|,12h
+

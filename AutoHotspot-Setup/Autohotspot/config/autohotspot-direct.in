@@ -5,9 +5,12 @@
 #must be included in copies or derivatives of this script.  
 
 #A script to switch between a wifi network and a non internet routed Hotspot
-#Works at startup or with a seperate timer or manually without a reboot
+#Works at startup or with a separate timer or manually without a reboot
 #Other setup required find out more at
 #http://www.raspberryconnect.com
+
+#   28 August, 2021 - E M Thornber
+#   Parameterise the AP IP address
 
 wifidev="wlan0" #device name to use. Default is wlan0.
 #use the command: iw dev ,to see wifi interface name 
@@ -22,7 +25,7 @@ IFS=$IFSdef #reset back to defaults
 
 
 #Note:If you only want to check for certain SSIDs
-#Remove the # in in front of ssids=('mySSID1'.... below and put a # infront of all four lines above
+#Remove the # in front of ssids=('mySSID1'.... below and put a # in front of all four lines above
 # separated by a space, eg ('mySSID1' 'mySSID2')
 #ssids=('mySSID1' 'mySSID2' 'mySSID3')
 
@@ -32,12 +35,18 @@ mac=()
 
 ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
+findAPaddress()
+{
+apipaddr=('|APADDRESS|/24')
+apipaddr=$(awk -F'=' '/apaddr=/{ print $0 }' /etc/canpi.cfg)
+}
+
 createAdHocNetwork()
 {
     echo "Autohotspot by RaspberryConnect.com"
     echo "Creating Hotspot"
     ip link set dev "$wifidev" down
-    ip a add 10.0.0.5/24 brd + dev "$wifidev"
+    ip a add |APADDRESS| brd + dev "$wifidev"
     ip link set dev "$wifidev" up
     dhcpcd -k "$wifidev" >/dev/null 2>&1
     systemctl start dnsmasq
