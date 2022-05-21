@@ -1,2 +1,4 @@
 *.swp
 .idea/
+/linux-5.13-x86_64/
+*.log

@@ -21,7 +21,7 @@ $service=/usr/lib/systemd/system
 %copyright 2022 RaspberryConnect.com
 %vendor Enchanted Systems Limited
 %license LICENSE
-%readme README
+%readme README.md
 %description A service to set up a WAP if no configured WiFi routers can be found
 %version 0.74.1
 
@@ -48,8 +48,8 @@ f 644 root root ${service}/autohotspot.service ${srcdir}/${config}/autohotspot-d
 
 # AutoHotspot configuration files
 f 644 root root ${autohs}/autohotspot.conf ${srcdir}/${config}/autohotspot-direct.conf
-f 644 root root ${autohs}/dhcpcd_autohs.conf ${srcdir}/${config}/dhcpcd_autohs.conf
-f 644 root root ${autohs}/dhcpcd_remove.conf ${srcdir}/${config}/dhcpcd_remove.conf
+f 644 root root ${autohs}/dhcpcd-autohs.conf ${srcdir}/${config}/dhcpcd-autohs.conf
+f 644 root root ${autohs}/dhcpcd-remove.conf ${srcdir}/${config}/dhcpcd-remove.conf
 f 644 root root ${autohs}/dnsmasq.conf.in ${srcdir}/${config}/dnsmasqAHS.conf.in
 f 644 root root ${autohs}/hostapd.conf.in ${srcdir}/${config}/hostapd.conf.in
 f 644 root root /etc/default/hostapd ${srcdir}/${config}/hostapd
