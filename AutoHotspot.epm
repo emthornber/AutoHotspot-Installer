@@ -16,6 +16,8 @@ $autohs=/usr/local/etc/autohs
 $bindir=/usr/local/bin
 $config=AutoHotspot-Setup/Autohotspot/config
 $service=/usr/lib/systemd/system
+# List of configuration files to be archived/restored
+$saveconf=dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf
 
 %product Create a WAP on a RPi if no WiFi available
 %copyright 2022 RaspberryConnect.com
@@ -52,7 +54,7 @@ f 644 root root ${autohs}/dhcpcd-autohs.conf ${srcdir}/${config}/dhcpcd-autohs.c
 f 644 root root ${autohs}/dhcpcd-remove.conf ${srcdir}/${config}/dhcpcd-remove.conf
 f 644 root root ${autohs}/dnsmasq.conf.in ${srcdir}/${config}/dnsmasqAHS.conf.in
 f 644 root root ${autohs}/hostapd.conf.in ${srcdir}/${config}/hostapd.conf.in
-f 644 root root /etc/default/hostapd ${srcdir}/${config}/hostapd
+#f 644 root root /etc/default/hostapd ${srcdir}/${config}/hostapd
 
 # AutoHotspot AWK scripts
 f 644 root root ${autohs}/update_dnsmasq.awk ${srcdir}/${config}/update_dnsmasq.awk
@@ -62,10 +64,9 @@ f 755 root root ${autohs}/update_hostapd.sh  ${srcdir}/${config}/update_hostapd.
 %preinstall <<EOF
 
 cd /etc
-for f in dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf default/hostapd
+for f in ${saveconf}
 do
-    if [ -f $$f ] ; then
-	mv $$f $$f.preautohs
+    if [ -f $$f ] ; then mv $$f $$f.preautohs ; fi
 done
 
 EOF
@@ -77,9 +78,9 @@ ${autohs}/update_hostapd.sh > /etc/hostapd/hostapd.conf
 ${SCTL} show --property=LoadState hostapd.service | grep masked && ${SCTL} unmask hostapd.service
 ${SCTL} show --property=UnitFileState hostapd.service | grep disabled && ${SCTL} enable hostapd.service
 # Configure dnsmasq
-network=`${AWK} -F'=' '/ap_network/{ print $2 }' ${autohs}/autohotspot.conf
+network=`${AWK} -F'=' '/ap_network/{ print $2 }' ${autohs}/autohotspot.conf`
 if [ -z $$network ] ; then network="192.168.45.1" ; fi
-${AWK} -v APNETWORK=$$network -f ${autohs}update_dnsmasq.awk ${autohs}/dnsmasq.conf.in > /etc/dnsmasq.conf
+${AWK} -v APNETWORK=$$network -f ${autohs}/update_dnsmasq.awk ${autohs}/dnsmasq.conf.in > /etc/dnsmasq.conf
 ${SCTL} show --property=LoadState dnsmasq.service | grep masked && ${SCTL} unmask dnsmasq.service
 ${SCTL} show --property=UnitFileState dnsmasq.service | grep enabled && ${SCTL} disable dnsmasq.service
 # Configure dhcpcd
@@ -104,10 +105,9 @@ EOF
 %postremove <<EOF
 
 cd /etc
-for f in dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf default/hostapd
+for f in ${saveconf}
 do
-    if [ -f $$f ] ; then
-	mv $$f.preautohs $$f
+    if [ -f $$f.preautohs ] ; then mv $$f.preautohs $$f ; fi
 done
 
 EOF
