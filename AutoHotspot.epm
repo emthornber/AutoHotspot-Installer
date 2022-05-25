@@ -45,16 +45,15 @@ d 755 root root /usr/local/etc -
 d 755 root root $autohs -
 
 # AutoHotspot script, and service
-f 755 root root ${bindir}/autohotspot ${srcdir}/${config}/autohotspot-direct
+f 755 root root ${bindir}/autohotspot          ${srcdir}/${config}/autohotspot-direct
 f 644 root root ${service}/autohotspot.service ${srcdir}/${config}/autohotspot-direct.service
 
 # AutoHotspot configuration files
-f 644 root root ${autohs}/autohotspot.conf ${srcdir}/${config}/autohotspot-direct.conf
+f 644 root root ${autohs}/autohotspot.conf   ${srcdir}/${config}/autohotspot-direct.conf
 f 644 root root ${autohs}/dhcpcd-autohs.conf ${srcdir}/${config}/dhcpcd-autohs.conf
 f 644 root root ${autohs}/dhcpcd-remove.conf ${srcdir}/${config}/dhcpcd-remove.conf
-f 644 root root ${autohs}/dnsmasq.conf.in ${srcdir}/${config}/dnsmasqAHS.conf.in
-f 644 root root ${autohs}/hostapd.conf.in ${srcdir}/${config}/hostapd.conf.in
-#f 644 root root /etc/default/hostapd ${srcdir}/${config}/hostapd
+f 644 root root ${autohs}/dnsmasq.conf.in    ${srcdir}/${config}/dnsmasqAHS.conf.in
+f 644 root root ${autohs}/hostapd.conf.in    ${srcdir}/${config}/hostapd.conf.in
 
 # AutoHotspot AWK scripts
 f 644 root root ${autohs}/update_dnsmasq.awk ${srcdir}/${config}/update_dnsmasq.awk
