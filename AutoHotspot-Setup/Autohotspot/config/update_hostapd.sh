@@ -8,7 +8,7 @@ SCRDIR=`dirname $0`
 
 . $SCRDIR/autohotspot.conf
 
-wpa_country=$(`/usr/bin/awk -F'=' '/country/{ print $2 }' /etc/wpa_supplicant/wpa_supplicant.conf`)
+wpa_country=$(/usr/bin/awk -F'=' '/country/{ print $2 }' /etc/wpa_supplicant/wpa_supplicant.conf)
 if [ -z $wpa_country ] ; then wpa_country="GB" ; fi
 
 # shellcheck disable=SC2154
