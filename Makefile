@@ -3,10 +3,13 @@
 #	21 May, 2022 - E M Thornber
 #	Created
 #
+#	25 May, 2022 - E M THornber
+#   Update package names
 ################################################################################
 
 EPM=/usr/local/bin/epm
-PKGNAME=ESL-MERG-autohs
+PKGNAME=autohs
+PKGDEFN=AutoHotspot.epm
 RM=/usr/bin/rm -f
 TS=`date "+%y%m%d-%H%M"`
 CFG_BASE=./Autohotspot/config
@@ -19,7 +22,7 @@ clean:
 pkgs: portable deb
 
 portable:
-	$(EPM) -vv $(PKGNAME) ./$(PKGNAME).epm | tee portable-$(TS).log
+	$(EPM) -vv srcdir="./" $(PKGNAME) ./$(PKGDEFN) | tee portable-$(TS).log
 
 deb:
-	$(EPM) -vv -f deb $(PKGNAME) ./$(PKGNAME).epm | tee deb-$(TS).log
+	$(EPM) -vv -f deb srcdir="./" $(PKGNAME) ./$(PKGDEFN) | tee deb-$(TS).log
