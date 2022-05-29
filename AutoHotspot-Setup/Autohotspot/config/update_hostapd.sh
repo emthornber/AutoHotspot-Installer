@@ -4,7 +4,7 @@
 #
 #   12 May, 2022 - E M Thornber
 #
-SCRDIR=`dirname $0`
+SRCDIR=`dirname $0`
 
 . $SCRDIR/autohotspot.conf
 
@@ -16,6 +16,6 @@ if [ -z $wpa_country ] ; then wpa_country="GB" ; fi
     -v SSID="$ap_ssid" \
     -v PASS="$ap_password" \
     -v CODE="$wpa_country" \
-    -f $SCRDIR/update_hostapd.awk \
-    $SCRDIR/hostapd.conf.in
+    -f $SRCDIR/update_hostapd.awk \
+    $SRCDIR/hostapd.conf.in
 
