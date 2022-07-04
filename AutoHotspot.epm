@@ -89,15 +89,15 @@ then
 fi
 cat ${autohs}/dhcpcd-autohs.conf >> /etc/dhcpcd.conf
 
-/bin/systemctl daemon-reload
-/bin/systemctl enable autohotspot
+${SCTL} daemon-reload
+${SCTL} enable autohotspot
 
 EOF
 
 %preremove <<EOF
 
-/bin/systemctl stop autohotspot
-/bin/systemctl disable autohotspot
+${SCTL} stop autohotspot
+${SCTL} disable autohotspot
 
 EOF
 
