@@ -1,2 +1,4 @@
 *.swp
 .idea/
+/linux-5.*/
+*.log
