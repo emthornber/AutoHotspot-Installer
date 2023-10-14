@@ -6,7 +6,7 @@
 #
 SRCDIR=`dirname $0`
 
-. $SCRDIR/autohotspot.conf
+source $SCRDIR/autohotspot.conf
 
 wpa_country=$(/usr/bin/awk -F'=' '/country/{ print $2 }' /etc/wpa_supplicant/wpa_supplicant.conf)
 if [ -z $wpa_country ] ; then wpa_country="GB" ; fi
@@ -17,5 +17,5 @@ if [ -z $wpa_country ] ; then wpa_country="GB" ; fi
     -v PASS="$ap_password" \
     -v CODE="$wpa_country" \
     -f $SRCDIR/update_hostapd.awk \
-    $SRCDIR/hostapd.conf.in
+    $SRCDIR/hostapd.conf.in > /etc/hostapd.conf
 

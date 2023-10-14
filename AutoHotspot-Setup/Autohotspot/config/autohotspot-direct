@@ -14,7 +14,7 @@
 #
 #-------------------------------------------------------------------------------
 # Load Access Point configuration
-source /usr/local/etc/autohs/autohotspot.conf
+source /usr/local/etc/autoap/autohotspot.conf
 #
 # variables defined
 # ap_ssid
@@ -51,8 +51,8 @@ ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
 updateDNSmasq() {
     awk -v APNETWORK=${ap_network} \
-	-f /usr/local/etc/autohs/update_dnsmasq.awk \
-	/usr/local/etc/autohs/dnsmasq.conf.in > /etc/dnsmasq.conf
+	-f /usr/local/etc/autoap/update_dnsmasq.awk \
+	/usr/local/etc/autoap/dnsmasq.conf.in > /etc/dnsmasq.conf
 }
 
 createAdHocNetwork()
@@ -183,6 +183,7 @@ NoDevice()
 chksys
 FindSSID
 updateDNSmasq
+source update_hostapd.sh
 
 #Create Hotspot or connect to valid wifi networks
 if [ "$ssidChk" != "NoSSid" ] 
