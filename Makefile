@@ -7,7 +7,8 @@
 #	Update package names
 ################################################################################
 
-EPM=/usr/local/bin/epm
+EPM=/usr/bin/epm
+#EPM=/usr/local/bin/epm
 PKGNAME=autohs
 PKGDEFN=AutoHotspot.epm
 RM=/usr/bin/rm -f
