@@ -5,6 +5,15 @@
 #
 #	25 May, 2022 - E M THornber
 #	Update package names
+#
+#	3 November, 2023 - E M Thornber
+#	Integrate into CMake
+#
+#	EVs required
+#	ODIR - where to place the .deb file
+#	SDIR - current source directory
+#
+#	Working directory is assumed to be ${CMAKE_CURRENT_SOURCE_DIR}
 ################################################################################
 
 EPM=/usr/bin/epm
@@ -23,7 +32,7 @@ clean:
 pkgs: portable deb
 
 portable:
-	$(EPM) -a all -f portable -vv srcdir="./" $(PKGNAME) ./$(PKGDEFN) | tee portable-$(TS).log
+	$(EPM) -a all -f portable -vv --output-dir $(ODIR) srcdir=$(SDIR) $(PKGNAME) $(SDIR)/package/$(PKGDEFN) | tee portable-$(TS).log
 
 deb:
-	$(EPM) -a all -f deb -vv srcdir="./" $(PKGNAME) ./$(PKGDEFN) | tee deb-$(TS).log
+	$(EPM) -a all -f deb      -vv --output-dir $(ODIR) srcdir=$(SDIR) $(PKGNAME) $(SDIR)/package/$(PKGDEFN) | tee deb-$(TS).log
