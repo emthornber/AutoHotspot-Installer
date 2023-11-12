@@ -3,3 +3,5 @@
 /linux-5.*/
 *.log
 AutoHotspot.package
+build/
+
