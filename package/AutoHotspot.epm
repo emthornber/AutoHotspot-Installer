@@ -6,6 +6,9 @@
 #   11 May, 2022 - E M Thornber
 #   Created
 #
+#   04 December, 2023 - E M Thornber
+#   Added extrernal package version in ${pkgver}
+#
 ################################################################################
 #
 # Utilities
@@ -25,7 +28,7 @@ $saveconf=dhcpcd.conf dnsmasq.conf hostapd/hostapd.conf
 %license LICENSE
 %readme README.md
 %description A service to set up a WAP if no configured WiFi routers can be found
-%version 0.74.1
+%version ${pkgver}
 
 %requires dhcpcd5
 %requires dnsmasq

@@ -4,4 +4,4 @@
 *.log
 AutoHotspot.package
 build/
-
+autohotspot-direct.conf
